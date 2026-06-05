@@ -1,0 +1,195 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "bun-react-template",
+      "dependencies": {
+        "@tanstack/browser-db-sqlite-persistence": "^0.1.9",
+        "@tanstack/db": "^0.6.5",
+        "@tanstack/query-db-collection": "^1.0.36",
+        "@tanstack/react-db": "^0.1.83",
+        "@tanstack/react-query": "^5.99.2",
+        "bun-plugin-tailwind": "^0.1.2",
+        "react": "^19.2.5",
+        "react-dom": "^19.2.5",
+        "tailwindcss": "^4.2.4",
+      },
+      "devDependencies": {
+        "@tanstack/node-db-sqlite-persistence": "^0.1.11",
+        "@types/better-sqlite3": "^7.6.13",
+        "@types/bun": "latest",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "better-sqlite3": "^12.10.0",
+      },
+    },
+  },
+  "packages": {
+    "@journeyapps/wa-sqlite": ["@journeyapps/wa-sqlite@1.7.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@journeyapps/wa-sqlite/-/wa-sqlite-1.7.0.tgz", {}, "sha512-xQZ670aKDo4FWxIFpLqY0AGDpURr09aYIO08UkLdWvFw8C018nCiqY0ILJudGRhRdXORhv7K2xD2OXZ2QxU39w=="],
+
+    "@oven/bun-darwin-aarch64": ["@oven/bun-darwin-aarch64@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-darwin-aarch64/-/bun-darwin-aarch64-1.3.11.tgz", {}, "sha512-/8IzqSu4/OWGRs7Fs2ROzGVwJMFTBQkgAp6sAthkBYoN7OiM4rY/CpPVs2X9w9N1W61CHSkEdNKi8HrLZKfK3g=="],
+
+    "@oven/bun-darwin-x64": ["@oven/bun-darwin-x64@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-darwin-x64/-/bun-darwin-x64-1.3.11.tgz", {}, "sha512-TT7eUihnAzxM2tlZesusuC75PAOYKvUBgVU/Nm/lakZ/DpyuqhNkzUfcxSgmmK9IjVWzMmezLIGZl16XGCGJng=="],
+
+    "@oven/bun-darwin-x64-baseline": ["@oven/bun-darwin-x64-baseline@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-darwin-x64-baseline/-/bun-darwin-x64-baseline-1.3.11.tgz", {}, "sha512-CYjIHWaQG7T4phfjErHr6BiXRs0K/9DqMeiohJmuYSBF+H2m56vFslOenLCguGYQL9jeiiCZBeoVCpwjxZrMgQ=="],
+
+    "@oven/bun-linux-aarch64": ["@oven/bun-linux-aarch64@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-linux-aarch64/-/bun-linux-aarch64-1.3.11.tgz", {}, "sha512-8XMLyRNxHF4jfLajkWt+F8UDxsWbzysyxQVMZKUXwoeGvaxB0rVd07r3YbgDtG8U6khhRFM3oaGp+CQ0whwmdA=="],
+
+    "@oven/bun-linux-aarch64-musl": ["@oven/bun-linux-aarch64-musl@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-linux-aarch64-musl/-/bun-linux-aarch64-musl-1.3.11.tgz", {}, "sha512-jBwYCLG5Eb+PqtFrc3Wp2WMYlw1Id75gUcsdP+ApCOpf5oQhHxkFWCjZmcDoioDmEhMWAiM3wtwSrTlPg+sI6Q=="],
+
+    "@oven/bun-linux-x64": ["@oven/bun-linux-x64@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-linux-x64/-/bun-linux-x64-1.3.11.tgz", {}, "sha512-z3GFCk1UBzDOOiEBHL32lVP7Edi26BhOjKb6bIc0nRyabbRiyON4++GR0zmd/H5zM5S0+UcXFgCGnD+b8avTLw=="],
+
+    "@oven/bun-linux-x64-baseline": ["@oven/bun-linux-x64-baseline@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-linux-x64-baseline/-/bun-linux-x64-baseline-1.3.11.tgz", {}, "sha512-KZlf1jKtf4jai8xiQv/0XRjxVVhHnw/HtUKtLdOeQpTOQ1fQFhLoz2FGGtVRd0LVa/yiRbSz9HlWIzWlmJClng=="],
+
+    "@oven/bun-linux-x64-musl": ["@oven/bun-linux-x64-musl@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-linux-x64-musl/-/bun-linux-x64-musl-1.3.11.tgz", {}, "sha512-ADImD4yCHNpqZu718E2chWcCaAHvua90yhmpzzV6fF4zOhwkGGbPCgUWmKyJ83uz+DXaPdYxX0ttDvtolrzx3Q=="],
+
+    "@oven/bun-linux-x64-musl-baseline": ["@oven/bun-linux-x64-musl-baseline@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-linux-x64-musl-baseline/-/bun-linux-x64-musl-baseline-1.3.11.tgz", {}, "sha512-J+qz4Al05PrNIOdj7xsWVTyx0c/gjUauG5nKV3Rrx0Q+5JO+1pPVlnfNmWbOF9pKG4f3IGad8KXJUfGMORld+Q=="],
+
+    "@oven/bun-windows-aarch64": ["@oven/bun-windows-aarch64@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-windows-aarch64/-/bun-windows-aarch64-1.3.11.tgz", {}, "sha512-UOdkwScHRkGPz+n9ZJU7sTkTvqV7rD1SLCLaru1xH8WRsV7tDorPqNCzEN1msOIiPRK825nvAtEm9UsomO1GsA=="],
+
+    "@oven/bun-windows-x64": ["@oven/bun-windows-x64@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-windows-x64/-/bun-windows-x64-1.3.11.tgz", {}, "sha512-E51tyWDP1l0CbjZYhiUxhDGPaY8Hf5YBREx0PHBff1LM1/q3qsJ6ZvRUa8YbbOO0Ax9QP6GHjD9vf3n6bXZ7QA=="],
+
+    "@oven/bun-windows-x64-baseline": ["@oven/bun-windows-x64-baseline@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@oven/bun-windows-x64-baseline/-/bun-windows-x64-baseline-1.3.11.tgz", {}, "sha512-cCsXK9AQ9Zf18QlVnbrFu2IKfr4sf2sfbErkF2jfCzyCO9Bnhl0KRx63zlN+Ni1xU7gcBLAssgcui5R400N2eA=="],
+
+    "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@standard-schema/spec/-/spec-1.1.0.tgz", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
+
+    "@tanstack/browser-db-sqlite-persistence": ["@tanstack/browser-db-sqlite-persistence@0.1.9", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/browser-db-sqlite-persistence/-/browser-db-sqlite-persistence-0.1.9.tgz", { "dependencies": { "@tanstack/db-sqlite-persistence-core": "0.1.9" }, "peerDependencies": { "@journeyapps/wa-sqlite": "^1.4.1", "typescript": ">=4.7" } }, "sha512-HVcrHGkIw62nT8dTnlblUN9Zn5CewIWXNzPsQaMqDy7qmnvkgE58xJeRInYr3HKbmKMm/E/mlFBkZygRkPr0/w=="],
+
+    "@tanstack/db": ["@tanstack/db@0.6.5", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/db/-/db-0.6.5.tgz", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@tanstack/db-ivm": "0.1.18", "@tanstack/pacer-lite": "^0.2.1" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-gtCuAo4UtC9SR/kTMu5fVEff6qZ2R1FZi9X7MybtHKA6wve7RePifGG6qBI4OmMB+7juT5/+glNbnqZOrG0/pg=="],
+
+    "@tanstack/db-ivm": ["@tanstack/db-ivm@0.1.18", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/db-ivm/-/db-ivm-0.1.18.tgz", { "dependencies": { "fractional-indexing": "^3.2.0", "sorted-btree": "^1.8.1" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-+pZJiRKdoKRM5Epq9T7otD9ZJl82pRFauo7LKuJGrarjVKQ7r+QQlPe3kGdN9LEKSnuNGIWjX9OOY4M8kH4eLw=="],
+
+    "@tanstack/db-sqlite-persistence-core": ["@tanstack/db-sqlite-persistence-core@0.1.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/db-sqlite-persistence-core/-/db-sqlite-persistence-core-0.1.11.tgz", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@tanstack/db": "0.6.7" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-HZyJBU64VL6M4vGTmaDVi+sVOhLyZiHKxGj0UdpWokcPBtbTHrSRrpXTE8HJCoQf6gDdbybj7OG2UBXWxJzHLg=="],
+
+    "@tanstack/node-db-sqlite-persistence": ["@tanstack/node-db-sqlite-persistence@0.1.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/node-db-sqlite-persistence/-/node-db-sqlite-persistence-0.1.11.tgz", { "dependencies": { "@tanstack/db-sqlite-persistence-core": "0.1.11", "better-sqlite3": "^12.6.2" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-shKyQ/o629e5qSPjKwoAWbp6y+d956OX4XWDOIOf9egImA3cLAosIn55ELwLhje5wcjSQacF7bP1jNcgQzVGsg=="],
+
+    "@tanstack/pacer-lite": ["@tanstack/pacer-lite@0.2.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/pacer-lite/-/pacer-lite-0.2.1.tgz", {}, "sha512-3PouiFjR4B6x1c969/Pl4ZIJleof1M0n6fNX8NRiC9Sqv1g06CVDlEaXUR4212ycGFyfq4q+t8Gi37Xy+z34iQ=="],
+
+    "@tanstack/query-core": ["@tanstack/query-core@5.99.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/query-core/-/query-core-5.99.2.tgz", {}, "sha512-1HunU0bXVsR1ZJMZbcOPE6VtaBJxsW809RE9xPe4Gz7MlB0GWwQvuTPhMoEmQ/hIzFKJ/DWAuttIe7BOaWx0tA=="],
+
+    "@tanstack/query-db-collection": ["@tanstack/query-db-collection@1.0.36", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/query-db-collection/-/query-db-collection-1.0.36.tgz", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@tanstack/db": "0.6.5" }, "peerDependencies": { "@tanstack/query-core": "^5.0.0", "typescript": ">=4.7" } }, "sha512-WOHSZeqFOflWpMxp7ndu8x3M8GyLieWyUsS1fReG8wv6I/1MGOz1j3+XNlGoeoWolYF2hV4l324/dB9BxjAwxw=="],
+
+    "@tanstack/react-db": ["@tanstack/react-db@0.1.83", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/react-db/-/react-db-0.1.83.tgz", { "dependencies": { "@tanstack/db": "0.6.5", "use-sync-external-store": "^1.6.0" }, "peerDependencies": { "react": ">=16.8.0" } }, "sha512-LNV0C7OARazooT2hLTr5anXo6tbEyX2rHZQ0j9HZ/iNBI+Tx/y19o5Nd3ooyAYz5LEHJJxb8iM8ZTVB/diGnXw=="],
+
+    "@tanstack/react-query": ["@tanstack/react-query@5.100.9", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/react-query/-/react-query-5.100.9.tgz", { "dependencies": { "@tanstack/query-core": "5.100.9" }, "peerDependencies": { "react": "^18 || ^19" } }, "sha512-Oa44XkaI3kCNN6ME0KByU3xT3SEUNOMfZpHxL6+wFoTm+OeUFYHKdeYVe0aOXlRDm/f15sgLwEt2HDorIdW8+A=="],
+
+    "@types/better-sqlite3": ["@types/better-sqlite3@7.6.13", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@types/better-sqlite3/-/better-sqlite3-7.6.13.tgz", { "dependencies": { "@types/node": "*" } }, "sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA=="],
+
+    "@types/bun": ["@types/bun@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@types/bun/-/bun-1.3.11.tgz", { "dependencies": { "bun-types": "1.3.11" } }, "sha512-5vPne5QvtpjGpsGYXiFyycfpDF2ECyPcTSsFBMa0fraoxiQyMJ3SmuQIGhzPg2WJuWxVBoxWJ2kClYTcw/4fAg=="],
+
+    "@types/node": ["@types/node@25.5.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@types/node/-/node-25.5.0.tgz", { "dependencies": { "undici-types": "~7.18.0" } }, "sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw=="],
+
+    "@types/react": ["@types/react@19.2.14", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@types/react/-/react-19.2.14.tgz", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w=="],
+
+    "@types/react-dom": ["@types/react-dom@19.2.3", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@types/react-dom/-/react-dom-19.2.3.tgz", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
+
+    "base64-js": ["base64-js@1.5.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/base64-js/-/base64-js-1.5.1.tgz", {}, "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA=="],
+
+    "better-sqlite3": ["better-sqlite3@12.10.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/better-sqlite3/-/better-sqlite3-12.10.0.tgz", { "dependencies": { "bindings": "^1.5.0", "prebuild-install": "^7.1.1" } }, "sha512-CyzaZRQKyHkB2ZInfTTl2nvT33EbDpjkLEbE8/Zck3Ll6O0qqvuGdrJ45HgtH+HykRg88ITY3AdreBGN70aBSQ=="],
+
+    "bindings": ["bindings@1.5.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/bindings/-/bindings-1.5.0.tgz", { "dependencies": { "file-uri-to-path": "1.0.0" } }, "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ=="],
+
+    "bl": ["bl@4.1.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/bl/-/bl-4.1.0.tgz", { "dependencies": { "buffer": "^5.5.0", "inherits": "^2.0.4", "readable-stream": "^3.4.0" } }, "sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w=="],
+
+    "buffer": ["buffer@5.7.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/buffer/-/buffer-5.7.1.tgz", { "dependencies": { "base64-js": "^1.3.1", "ieee754": "^1.1.13" } }, "sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ=="],
+
+    "bun": ["bun@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/bun/-/bun-1.3.11.tgz", { "optionalDependencies": { "@oven/bun-darwin-aarch64": "1.3.11", "@oven/bun-darwin-x64": "1.3.11", "@oven/bun-darwin-x64-baseline": "1.3.11", "@oven/bun-linux-aarch64": "1.3.11", "@oven/bun-linux-aarch64-musl": "1.3.11", "@oven/bun-linux-x64": "1.3.11", "@oven/bun-linux-x64-baseline": "1.3.11", "@oven/bun-linux-x64-musl": "1.3.11", "@oven/bun-linux-x64-musl-baseline": "1.3.11", "@oven/bun-windows-aarch64": "1.3.11", "@oven/bun-windows-x64": "1.3.11", "@oven/bun-windows-x64-baseline": "1.3.11" }, "bin": { "bun": "bin/bun.exe", "bunx": "bin/bunx.exe" } }, "sha512-AvXWYFO6j/ZQ7bhGm4X6eilq2JHsDVC90ZM32k2B7/srhC2gs3Sdki1QTbwrdRCo8o7eT+167vcB1yzOvPdbjA=="],
+
+    "bun-plugin-tailwind": ["bun-plugin-tailwind@0.1.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/bun-plugin-tailwind/-/bun-plugin-tailwind-0.1.2.tgz", { "peerDependencies": { "bun": ">=1.0.0" } }, "sha512-41jNC1tZRSK3s1o7pTNrLuQG8kL/0vR/JgiTmZAJ1eHwe0w5j6HFPKeqEk0WAD13jfrUC7+ULuewFBBCoADPpg=="],
+
+    "bun-types": ["bun-types@1.3.11", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/bun-types/-/bun-types-1.3.11.tgz", { "dependencies": { "@types/node": "*" } }, "sha512-1KGPpoxQWl9f6wcZh57LvrPIInQMn2TQ7jsgxqpRzg+l0QPOFvJVH7HmvHo/AiPgwXy+/Thf6Ov3EdVn1vOabg=="],
+
+    "chownr": ["chownr@1.1.4", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/chownr/-/chownr-1.1.4.tgz", {}, "sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg=="],
+
+    "csstype": ["csstype@3.2.3", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/csstype/-/csstype-3.2.3.tgz", {}, "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ=="],
+
+    "decompress-response": ["decompress-response@6.0.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/decompress-response/-/decompress-response-6.0.0.tgz", { "dependencies": { "mimic-response": "^3.1.0" } }, "sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ=="],
+
+    "deep-extend": ["deep-extend@0.6.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/deep-extend/-/deep-extend-0.6.0.tgz", {}, "sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA=="],
+
+    "detect-libc": ["detect-libc@2.1.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/detect-libc/-/detect-libc-2.1.2.tgz", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
+
+    "end-of-stream": ["end-of-stream@1.4.5", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/end-of-stream/-/end-of-stream-1.4.5.tgz", { "dependencies": { "once": "^1.4.0" } }, "sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg=="],
+
+    "expand-template": ["expand-template@2.0.3", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/expand-template/-/expand-template-2.0.3.tgz", {}, "sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg=="],
+
+    "file-uri-to-path": ["file-uri-to-path@1.0.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz", {}, "sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw=="],
+
+    "fractional-indexing": ["fractional-indexing@3.2.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/fractional-indexing/-/fractional-indexing-3.2.0.tgz", {}, "sha512-PcOxmqwYCW7O2ovKRU8OoQQj2yqTfEB/yeTYk4gPid6dN5ODRfU1hXd9tTVZzax/0NkO7AxpHykvZnT1aYp/BQ=="],
+
+    "fs-constants": ["fs-constants@1.0.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/fs-constants/-/fs-constants-1.0.0.tgz", {}, "sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow=="],
+
+    "github-from-package": ["github-from-package@0.0.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/github-from-package/-/github-from-package-0.0.0.tgz", {}, "sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw=="],
+
+    "ieee754": ["ieee754@1.2.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/ieee754/-/ieee754-1.2.1.tgz", {}, "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA=="],
+
+    "inherits": ["inherits@2.0.4", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/inherits/-/inherits-2.0.4.tgz", {}, "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ=="],
+
+    "ini": ["ini@1.3.8", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/ini/-/ini-1.3.8.tgz", {}, "sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew=="],
+
+    "mimic-response": ["mimic-response@3.1.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/mimic-response/-/mimic-response-3.1.0.tgz", {}, "sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ=="],
+
+    "minimist": ["minimist@1.2.8", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/minimist/-/minimist-1.2.8.tgz", {}, "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA=="],
+
+    "mkdirp-classic": ["mkdirp-classic@0.5.3", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/mkdirp-classic/-/mkdirp-classic-0.5.3.tgz", {}, "sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A=="],
+
+    "napi-build-utils": ["napi-build-utils@2.0.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/napi-build-utils/-/napi-build-utils-2.0.0.tgz", {}, "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA=="],
+
+    "node-abi": ["node-abi@3.92.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/node-abi/-/node-abi-3.92.0.tgz", { "dependencies": { "semver": "^7.3.5" } }, "sha512-KdHvFWZjEKDf0cakgFjebl371GPsISX2oZHcuyKqM7DtogIsHrqKeLTo8wBHxaXRAQlY2PsPlZmfo+9ZCxEREQ=="],
+
+    "once": ["once@1.4.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/once/-/once-1.4.0.tgz", { "dependencies": { "wrappy": "1" } }, "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w=="],
+
+    "prebuild-install": ["prebuild-install@7.1.3", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/prebuild-install/-/prebuild-install-7.1.3.tgz", { "dependencies": { "detect-libc": "^2.0.0", "expand-template": "^2.0.3", "github-from-package": "0.0.0", "minimist": "^1.2.3", "mkdirp-classic": "^0.5.3", "napi-build-utils": "^2.0.0", "node-abi": "^3.3.0", "pump": "^3.0.0", "rc": "^1.2.7", "simple-get": "^4.0.0", "tar-fs": "^2.0.0", "tunnel-agent": "^0.6.0" }, "bin": { "prebuild-install": "bin.js" } }, "sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug=="],
+
+    "pump": ["pump@3.0.3", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/pump/-/pump-3.0.3.tgz", { "dependencies": { "end-of-stream": "^1.1.0", "once": "^1.3.1" } }, "sha512-todwxLMY7/heScKmntwQG8CXVkWUOdYxIvY2s0VWAAMh/nd8SoYiRaKjlr7+iCs984f2P8zvrfWcDDYVb73NfA=="],
+
+    "rc": ["rc@1.2.8", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/rc/-/rc-1.2.8.tgz", { "dependencies": { "deep-extend": "^0.6.0", "ini": "~1.3.0", "minimist": "^1.2.0", "strip-json-comments": "~2.0.1" }, "bin": { "rc": "./cli.js" } }, "sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw=="],
+
+    "react": ["react@19.2.5", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/react/-/react-19.2.5.tgz", {}, "sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA=="],
+
+    "react-dom": ["react-dom@19.2.5", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/react-dom/-/react-dom-19.2.5.tgz", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.5" } }, "sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag=="],
+
+    "readable-stream": ["readable-stream@3.6.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/readable-stream/-/readable-stream-3.6.2.tgz", { "dependencies": { "inherits": "^2.0.3", "string_decoder": "^1.1.1", "util-deprecate": "^1.0.1" } }, "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA=="],
+
+    "safe-buffer": ["safe-buffer@5.2.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/safe-buffer/-/safe-buffer-5.2.1.tgz", {}, "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="],
+
+    "scheduler": ["scheduler@0.27.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/scheduler/-/scheduler-0.27.0.tgz", {}, "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q=="],
+
+    "semver": ["semver@7.7.4", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/semver/-/semver-7.7.4.tgz", { "bin": { "semver": "bin/semver.js" } }, "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA=="],
+
+    "simple-concat": ["simple-concat@1.0.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/simple-concat/-/simple-concat-1.0.1.tgz", {}, "sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q=="],
+
+    "simple-get": ["simple-get@4.0.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/simple-get/-/simple-get-4.0.1.tgz", { "dependencies": { "decompress-response": "^6.0.0", "once": "^1.3.1", "simple-concat": "^1.0.0" } }, "sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA=="],
+
+    "sorted-btree": ["sorted-btree@1.8.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/sorted-btree/-/sorted-btree-1.8.1.tgz", {}, "sha512-395+XIP+wqNn3USkFSrNz7G3Ss/MXlZEqesxvzCRFwL14h6e8LukDHdLBePn5pwbm5OQ9vGu8mDyz2lLDIqamQ=="],
+
+    "string_decoder": ["string_decoder@1.3.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/string_decoder/-/string_decoder-1.3.0.tgz", { "dependencies": { "safe-buffer": "~5.2.0" } }, "sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA=="],
+
+    "strip-json-comments": ["strip-json-comments@2.0.1", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/strip-json-comments/-/strip-json-comments-2.0.1.tgz", {}, "sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ=="],
+
+    "tailwindcss": ["tailwindcss@4.2.4", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/tailwindcss/-/tailwindcss-4.2.4.tgz", {}, "sha512-HhKppgO81FQof5m6TEnuBWCZGgfRAWbaeOaGT00KOy/Pf/j6oUihdvBpA7ltCeAvZpFhW3j0PTclkxsd4IXYDA=="],
+
+    "tar-fs": ["tar-fs@2.1.4", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/tar-fs/-/tar-fs-2.1.4.tgz", { "dependencies": { "chownr": "^1.1.1", "mkdirp-classic": "^0.5.2", "pump": "^3.0.0", "tar-stream": "^2.1.4" } }, "sha512-mDAjwmZdh7LTT6pNleZ05Yt65HC3E+NiQzl672vQG38jIrehtJk/J3mNwIg+vShQPcLF/LV7CMnDW6vjj6sfYQ=="],
+
+    "tar-stream": ["tar-stream@2.2.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/tar-stream/-/tar-stream-2.2.0.tgz", { "dependencies": { "bl": "^4.0.3", "end-of-stream": "^1.4.1", "fs-constants": "^1.0.0", "inherits": "^2.0.3", "readable-stream": "^3.1.1" } }, "sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ=="],
+
+    "tunnel-agent": ["tunnel-agent@0.6.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/tunnel-agent/-/tunnel-agent-0.6.0.tgz", { "dependencies": { "safe-buffer": "^5.0.1" } }, "sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w=="],
+
+    "typescript": ["typescript@6.0.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/typescript/-/typescript-6.0.2.tgz", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ=="],
+
+    "undici-types": ["undici-types@7.18.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/undici-types/-/undici-types-7.18.2.tgz", {}, "sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w=="],
+
+    "use-sync-external-store": ["use-sync-external-store@1.6.0", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/use-sync-external-store/-/use-sync-external-store-1.6.0.tgz", { "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w=="],
+
+    "util-deprecate": ["util-deprecate@1.0.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/util-deprecate/-/util-deprecate-1.0.2.tgz", {}, "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="],
+
+    "wrappy": ["wrappy@1.0.2", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/wrappy/-/wrappy-1.0.2.tgz", {}, "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="],
+
+    "@tanstack/browser-db-sqlite-persistence/@tanstack/db-sqlite-persistence-core": ["@tanstack/db-sqlite-persistence-core@0.1.9", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/db-sqlite-persistence-core/-/db-sqlite-persistence-core-0.1.9.tgz", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@tanstack/db": "0.6.5" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-Ju4HcBzaSXTaPJFMRWNjiyXRfCmom0AXBr/22sqLoQWY1TjFM/UTbSSTQgsrExkNuFDVFiV8EDpCt8WUBFiKcQ=="],
+
+    "@tanstack/db-sqlite-persistence-core/@tanstack/db": ["@tanstack/db@0.6.7", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/db/-/db-0.6.7.tgz", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@tanstack/db-ivm": "0.1.18", "@tanstack/pacer-lite": "^0.2.1" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-nCwOhNXogu3JHdkNPXX6+B8aL0F4wVe0CwLvNS7ccCQ6m9147L8qJewL4IZVyACQDsLGs5MKg91x+VUiD+MplQ=="],
+
+    "@tanstack/react-query/@tanstack/query-core": ["@tanstack/query-core@5.100.9", "https://evinova-dev-891377402974.d.codeartifact.eu-west-1.amazonaws.com/npm/read-all/@tanstack/query-core/-/query-core-5.100.9.tgz", {}, "sha512-SJSFw1S8+kQ0+knv/XGfrbocWoAlT7vDKsSImtLx3ZPQmEcR46hkDjLSvynSy25N8Ms4tIEini1FuBd5k7IscQ=="],
+  }
+}

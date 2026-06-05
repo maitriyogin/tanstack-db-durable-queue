@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <title>Bun + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!--
+      Shim Worker before any module loads so the OPFS persistence package's
+      bundled `new URL("../assets/opfs-worker-*.js", import.meta.url)` lookup
+      — which resolves to a cross-origin file:// URL under Bun's dev server —
+      gets rewritten to our same-origin /_opfs-assets/ route. Must run
+      before <script type="module"> below; module imports (especially
+      persistence.ts's top-level await) execute immediately on parse.
+    -->
+    <script>
+      (function () {
+        var Native = self.Worker;
+        if (!Native) return;
+        var Patched = function (url, options) {
+          var href = typeof url === 'string' ? url : (url && url.href) || String(url);
+          var match = href.match(/\/(opfs-worker-[^/]+\.js)$/);
+          var finalUrl = match ? '/_opfs-assets/' + match[1] : url;
+          return new Native(finalUrl, options);
+        };
+        Patched.prototype = Native.prototype;
+        self.Worker = Patched;
+      })();
+    </script>
+    <script type="module" src="./frontend.tsx"></script>
+  </body>
+</html>

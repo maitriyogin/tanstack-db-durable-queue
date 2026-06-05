@@ -1,0 +1,31 @@
+{
+  "name": "bun-react-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun src/index.ts",
+    "start": "NODE_ENV=production bun src/index.ts",
+    "build": "bun run build.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@tanstack/browser-db-sqlite-persistence": "^0.1.9",
+    "@tanstack/db": "^0.6.5",
+    "@tanstack/query-db-collection": "^1.0.36",
+    "@tanstack/react-db": "^0.1.83",
+    "@tanstack/react-query": "^5.99.2",
+    "bun-plugin-tailwind": "^0.1.2",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@tanstack/node-db-sqlite-persistence": "^0.1.11",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "better-sqlite3": "^12.10.0"
+  }
+}

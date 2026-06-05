@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Todo {
+  id           String        @id @default(uuid())
+  name         String
+  description  String
+  status       String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  shoppingList ShoppingList?
+}
+
+model TodoAudit {
+  id        String   @id @default(uuid())
+  todoId    String
+  action    String
+  changes   String?
+  createdAt DateTime @default(now())
+
+  @@index([todoId])
+}
+
+model ShoppingList {
+  id          String             @id @default(uuid())
+  name        String
+  description String?
+  todo        Todo?              @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  todoId      String?            @unique
+  items       ShoppingListItem[]
+  budget      Budget?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model ShoppingListItem {
+  id             String       @id @default(uuid())
+  name           String
+  quantity       Int          @default(1)
+  unit           String?
+  notes          String?
+  cost           Int          @default(0)
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  shoppingListId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([shoppingListId])
+}
+
+model Budget {
+  id             String       @id @default(uuid())
+  total          Int
+  remaining      Int
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  shoppingListId String       @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
