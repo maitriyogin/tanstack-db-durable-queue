@@ -72,7 +72,10 @@ export function ShoppingList() {
     shoppingListsCollection.delete(id);
   };
 
-  if (isLoading) {
+  // Mirrors TodoList: only block on the loading state when there's nothing
+  // cached to show. Lets offline reloads render whatever the local SQLite
+  // already has instead of hanging on a network query that won't resolve.
+  if (isLoading && (!lists || lists.length === 0)) {
     return (
       <div className="mt-8 mx-auto w-full max-w-2xl text-center">
         <p className="text-gray-400">Loading shopping lists...</p>

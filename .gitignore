@@ -5,3 +5,5 @@ dist/
 .env
 .idea/
 src/schema.gql
+test-results/
+playwright-report/

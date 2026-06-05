@@ -70,14 +70,18 @@ export function TodoList() {
     deleteTodo(todoId);
   };
 
-  if (isLoading) {
+  // Only show the loading state when we have nothing to render. If the
+  // synced SQLite cache already has rows, render them — useful when the
+  // first network query hasn't returned yet (cold start, slow link, or
+  // offline reload), so cached data stays visible instead of being hidden
+  // behind a spinner that never resolves.
+  if (isLoading && (!todos || todos.length === 0)) {
     return (
       <div className="mt-8 mx-auto w-full max-w-2xl text-center">
         <p className="text-gray-400">Loading todos...</p>
       </div>
     );
   }
-  console.log(todos);
   return (
     <div className="mt-8 mx-auto w-full max-w-2xl">
       <div className="flex justify-between items-center mb-4">

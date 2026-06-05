@@ -131,6 +131,11 @@ export interface MutationQueue {
   size(): number;
   list(): Array<QueueOp>;
   bindings(): Array<IdBinding>;
+  // Emit a `store-snapshot` log line containing the current contents of the
+  // active queue, the quarantine store, and the temp→server bindings store.
+  // Useful from DevTools (e.g. `mutationQueue.logSnapshot()`) to peek at what
+  // is currently sitting in each SQLite-backed table.
+  logSnapshot(label?: string): void;
 }
 
 export interface IdBinding {
@@ -172,7 +177,9 @@ export type MutationLogStage =
   | 'projection-apply'
   | 'projection-error'
   | 'invalidate'
-  | 'register-collection';
+  | 'register-collection'
+  | 'clear-local-state'
+  | 'store-snapshot';
 
 export type MutationLogger = (
   stage: MutationLogStage,
@@ -345,7 +352,12 @@ export function createMutationQueue(
     // Wait for persistence to flush so a crash right after this resolves
     // doesn't lose the binding.
     await tx.isPersisted.promise;
-    log('bind-temp-to-server', { collectionId, tempId, serverId });
+    log('bind-temp-to-server', {
+      collectionId,
+      tempId,
+      serverId,
+      bindingsSize: idBindings.size,
+    });
     // Notify subscribers so the wrapper can project still-queued ops
     // referencing the temp id into the synced cache under the new server
     // id. Suppresses the brief flicker between the create's auto-refetch
@@ -428,6 +440,9 @@ export function createMutationQueue(
       error: message,
       cascadeSize: cascade.length,
       correlationKey: parent.correlationKey,
+      payload: parent.payload,
+      queueDepth: queue.size,
+      quarantineSize: quarantine.size,
     });
     // Crucially: don't settle the parent transaction. TanStack DB keeps the
     // optimistic state active until the deferred resolves; leaving it pending
@@ -451,6 +466,9 @@ export function createMutationQueue(
         key: sibling.key,
         anchorOpId: parent.id,
         correlationKey: parent.correlationKey,
+        payload: sibling.payload,
+        queueDepth: queue.size,
+        quarantineSize: quarantine.size,
       });
       // Same reasoning as the parent: leave the deferred pending so the
       // dependent op's optimistic state stays visible.
@@ -483,7 +501,11 @@ export function createMutationQueue(
 
   async function retryCascade(correlationKey: string) {
     const group = quarantinedByCorrelation(correlationKey);
-    log('recovery-retry', { correlationKey, count: group.length });
+    log('recovery-retry', {
+      correlationKey,
+      count: group.length,
+      ops: group.map((op) => ({ opId: op.id, type: op.type, key: op.key })),
+    });
     // Anchor first so dependents drain after it lands.
     group.sort((a, b) => a.seq - b.seq);
     for (const op of group) moveOpFromQuarantineToActive(op);
@@ -492,7 +514,11 @@ export function createMutationQueue(
 
   async function discardCascade(correlationKey: string) {
     const group = quarantinedByCorrelation(correlationKey);
-    log('recovery-discard', { correlationKey, count: group.length });
+    log('recovery-discard', {
+      correlationKey,
+      count: group.length,
+      ops: group.map((op) => ({ opId: op.id, type: op.type, key: op.key })),
+    });
     for (const op of group) {
       // Settle the still-pending parent deferred with a discard error so
       // TanStack DB rolls back the optimistic state for this op's row.
@@ -614,6 +640,7 @@ export function createMutationQueue(
             collectionId: head.collectionId,
             type: head.type,
             key: head.key,
+            queueDepth: queue.size,
           });
         } catch (error) {
           const errMsg = error instanceof Error ? error.message : String(error);
@@ -786,6 +813,9 @@ export function createMutationQueue(
         key: op.key,
         correlationKey: op.correlationKey,
         seq,
+        payload: op.payload,
+        queueDepth: queue.size,
+        quarantineSize: quarantine.size,
       });
       void drain();
     },
@@ -821,7 +851,9 @@ export function createMutationQueue(
       await Promise.all([queue.preload(), idBindings.preload(), quarantine.preload()]);
       bindingsLoaded = false; // force reload after preload completes
       ensureBindingsLoaded();
+      this.logSnapshot('post-preload');
       coldBootSweep();
+      this.logSnapshot('post-cold-boot-sweep');
     },
     sessionId: () => SESSION_ID,
     quarantineList: () => Array.from(quarantine.values() as Iterable<QueueOp>),
@@ -830,6 +862,12 @@ export function createMutationQueue(
       return () => sub.unsubscribe();
     },
     async clearLocalState() {
+      const before = {
+        queue: queue.size,
+        quarantine: quarantine.size,
+        bindings: idBindings.size,
+        pendingDeferreds: completionByOpId.size,
+      };
       // Reject every pending awaitOpCompletion deferred so parent
       // transactions don't hang. Caller's perspective: their mutation
       // failed with a `Local data cleared` error, TanStack DB rolls back
@@ -860,9 +898,51 @@ export function createMutationQueue(
       // Reset draining flag so a future trigger drains cleanly.
       draining = false;
       drainRequestedDuringDrain = false;
+      log('clear-local-state', {
+        cleared: before,
+        after: {
+          queue: queue.size,
+          quarantine: quarantine.size,
+          bindings: idBindings.size,
+          pendingDeferreds: completionByOpId.size,
+        },
+      });
     },
     size: () => queue.size,
     list: () => Array.from(queue.values() as Iterable<QueueOp>),
     bindings: () => Array.from(idBindings.values() as Iterable<IdBinding>),
+    logSnapshot(label?: string) {
+      log('store-snapshot', {
+        label: label ?? 'manual',
+        sessionId: SESSION_ID,
+        queue: Array.from(queue.values() as Iterable<QueueOp>).map((op) => ({
+          opId: op.id,
+          collectionId: op.collectionId,
+          type: op.type,
+          key: op.key,
+          status: op.status,
+          attempts: op.attempts,
+          seq: op.seq,
+          correlationKey: op.correlationKey,
+          nextAttemptAt: op.nextAttemptAt,
+          recoveredFromCrash: op.recoveredFromCrash ?? false,
+        })),
+        quarantine: Array.from(quarantine.values() as Iterable<QueueOp>).map((op) => ({
+          opId: op.id,
+          collectionId: op.collectionId,
+          type: op.type,
+          key: op.key,
+          reason: op.quarantineReason,
+          error: op.quarantineError,
+          attempts: op.attempts,
+          correlationKey: op.correlationKey,
+        })),
+        bindings: Array.from(idBindings.values() as Iterable<IdBinding>).map((b) => ({
+          collectionId: b.collectionId,
+          tempId: b.tempId,
+          serverId: b.serverId,
+        })),
+      });
+    },
   };
 }

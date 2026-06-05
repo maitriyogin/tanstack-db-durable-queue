@@ -25,6 +25,9 @@ const STAGE_COLOR: Record<MutationLogStage, string> = {
   'projection-error': 'color: #dc2626',
   invalidate: 'color: #14b8a6',
   'register-collection': 'color: #94a3b8',
+  'offline-paused': 'color: #f97316',                              // orange
+  'clear-local-state': 'color: #ef4444; font-weight: bold',        // red (destructive)
+  'store-snapshot': 'color: #6366f1; font-weight: bold',           // indigo
 };
 
 // Default browser-friendly logger. Prefixes every line with [durableQueue],

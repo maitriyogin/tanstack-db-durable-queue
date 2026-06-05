@@ -12,9 +12,11 @@
     "dev:fe": "bun run --cwd fe-todos dev",
     "build:fe": "bun run --cwd fe-todos build",
     "build:bff": "bun run --cwd bff-todos build",
-    "test": "bun run --cwd fe-todos test"
+    "test": "bun run --cwd fe-todos test",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.48.0",
     "concurrently": "^9.2.1"
   }
 }

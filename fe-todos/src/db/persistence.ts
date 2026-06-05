@@ -24,6 +24,13 @@ export const dbReady: Promise<void> = (async () => {
   const coordinator = new BrowserCollectionCoordinator({ dbName: DB_NAME });
   _persistence = createBrowserWASQLitePersistence({ database, coordinator });
   _mutationQueue = createMutationQueue(_persistence, { logger: consoleLogger });
+  // Expose on window for DevTools introspection. Call
+  //   mutationQueue.logSnapshot()
+  // from the console to print the current contents of the active queue,
+  // quarantine store, and temp→server bindings.
+  if (typeof window !== 'undefined') {
+    (window as any).mutationQueue = _mutationQueue;
+  }
 })();
 
 // These exports look like ordinary singletons but are only safe to *touch*
