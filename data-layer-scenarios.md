@@ -146,6 +146,17 @@ After N failed attempts, an operation is moved out of the active queue into a qu
 - **Cold-boot sweep** — on init, re-evaluate the persisted queue: resume in-flight ops, re-arm backoff timers, sweep anything that should already be quarantined.
 - **Crash-vs-in-flight disambiguation** — distinguish "this op is actively sending in *this* session" from "this op was persisted mid-flight by a previous session that crashed," so the UI can show *Sending…* vs *Recovered after crash* correctly.
 
+## Deduplication (idempotent at-least-once delivery)
+
+The runner gives at-least-once delivery: an op may dispatch more than once if the BFF ran the work but the response never reached the client. Without dedup, retries can double-write (a `createTodo` lands twice, an `incrementBudget` adds twice). The contract the queue needs from the server:
+
+- **Stable op id, client-minted.** Each queued op gets a UUID at enqueue time and keeps it across retries. The FE sends it as the `X-Client-Op-Id` header on every mutation request, so a retry carries the same id as the original attempt.
+- **Server-side dedup store.** First execution persists `(clientOpId, response)`; subsequent requests with the same id return the cached response without re-running the resolver. Closes the gap when the response was lost in transit.
+- **Per-call ids on fan-out.** Some queued ops produce multiple HTTP calls (e.g. shopping-list `syncItems` adds N items, removes M, updates K). Each derived call needs its own id (`${parentOpId}:add:${itemId}`, etc.) — deterministic across retries, but distinct per HTTP request so the cache doesn't collide.
+- **Optional opt-out.** When the header is missing the server falls through to plain execution. Reads never carry the header. Mutations made outside the durable queue (manual GraphQL playground calls, admin tooling) are unaffected.
+- **Cache durability.** The dedup store survives BFF restarts. If the cache forgets between attempts, the next retry re-runs the work — back to the original at-least-once risk.
+- **Replay fidelity.** A replayed response must match the original byte-for-byte after GraphQL serialization. ISO-8601 strings round-tripped through JSON need to come back as `Date` instances (or whatever the scalar's `serialize` expects), or the second response 500s on a serialization error.
+
 ## Coverage checklist
 
 A stack is ready to back an optimistic domain only when every box is satisfiable:

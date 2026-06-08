@@ -50,6 +50,7 @@ async function syncItems(
   resolvedListId: string,
   original: ShoppingList,
   modified: ShoppingList,
+  parentOpId?: string,
 ) {
   const originalById = new Map(original.items.map((item) => [item.id, item]));
   const modifiedById = new Map(modified.items.map((item) => [item.id, item]));
@@ -70,6 +71,13 @@ async function syncItems(
   const resolveItemId = (itemId: string) =>
     mutationQueue.resolveServerId('shoppingListItems', itemId);
 
+  // One parent queue op fans out into N HTTP calls here. Each needs its own
+  // stable client-op-id so the BFF caches them independently, while still
+  // being deterministic across retries (same parent op + same item id =
+  // same sub-id). Falls back to undefined when there's no parent op id.
+  const subOpId = (kind: string, itemId: string) =>
+    parentOpId ? `${parentOpId}:${kind}:${itemId}` : undefined;
+
   // Adds run first so their temp→server bindings exist before any remove
   // or update in the same batch translates an item id. Without this an
   // add-then-remove of the same item *within one batch* would race —
@@ -77,14 +85,17 @@ async function syncItems(
   // no-op against a server id that doesn't exist yet.
   await Promise.all(
     added.map(async (item) => {
-      const created = await graphql.addShoppingListItem({
-        shoppingListId: resolvedListId,
-        name: item.name,
-        quantity: item.quantity,
-        unit: item.unit ?? undefined,
-        notes: item.notes ?? undefined,
-        cost: item.cost ?? 0,
-      });
+      const created = await graphql.addShoppingListItem(
+        {
+          shoppingListId: resolvedListId,
+          name: item.name,
+          quantity: item.quantity,
+          unit: item.unit ?? undefined,
+          notes: item.notes ?? undefined,
+          cost: item.cost ?? 0,
+        },
+        subOpId('add', item.id),
+      );
       // Bind temp item id → server id so subsequent queued ops (or any
       // remove/update in this same batch) target the right row.
       if (created?.id && created.id !== item.id) {
@@ -99,7 +110,10 @@ async function syncItems(
 
   await Promise.all([
     ...removed.map((item) =>
-      graphql.removeShoppingListItem(resolveItemId(item.id)),
+      graphql.removeShoppingListItem(
+        resolveItemId(item.id),
+        subOpId('remove', item.id),
+      ),
     ),
     ...updated.map((item) => {
       const originalItem = originalById.get(item.id)!;
@@ -110,7 +124,7 @@ async function syncItems(
           Object.entries(changes).map(([key, value]) => [key, value ?? undefined]),
         ),
       };
-      return graphql.updateShoppingListItem(input);
+      return graphql.updateShoppingListItem(input, subOpId('update', item.id));
     }),
   ]);
 }
@@ -152,18 +166,21 @@ export const shoppingListsCollection = createCollection(
 
     onInsert: async ({ transaction }) => {
       const inserted = transaction.mutations[0].modified as ShoppingList;
-      const created = await graphql.createShoppingList({
-        name: inserted.name,
-        description: inserted.description ?? undefined,
-        todoId: inserted.todoId ?? undefined,
-        items: inserted.items.map((item) => ({
-          name: item.name,
-          quantity: item.quantity,
-          unit: item.unit ?? undefined,
-          notes: item.notes ?? undefined,
-          cost: item.cost ?? 0,
-        })),
-      });
+      const created = await graphql.createShoppingList(
+        {
+          name: inserted.name,
+          description: inserted.description ?? undefined,
+          todoId: inserted.todoId ?? undefined,
+          items: inserted.items.map((item) => ({
+            name: item.name,
+            quantity: item.quantity,
+            unit: item.unit ?? undefined,
+            notes: item.notes ?? undefined,
+            cost: item.cost ?? 0,
+          })),
+        },
+        (transaction as any).clientOpId,
+      );
       return { serverId: created.id };
     },
 
@@ -171,12 +188,12 @@ export const shoppingListsCollection = createCollection(
       const original = transaction.mutations[0].original as ShoppingList;
       const modified = transaction.mutations[0].modified as ShoppingList;
       const resolvedListId = String(transaction.mutations[0].key);
-      await syncItems(resolvedListId, original, modified);
+      await syncItems(resolvedListId, original, modified, (transaction as any).clientOpId);
     },
 
     onDelete: async ({ transaction }) => {
       const key = String(transaction.mutations[0].key);
-      await graphql.deleteShoppingList(key);
+      await graphql.deleteShoppingList(key, (transaction as any).clientOpId);
     },
 
     // Projection: when items are added or removed from an existing list,

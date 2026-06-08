@@ -56,17 +56,26 @@ const BUDGET_FIELDS = `
 
 const GRAPHQL_ENDPOINT = 'http://localhost:4010/graphql';
 
-async function graphqlRequest<T>(query: string, variables?: Record<string, any>): Promise<T> {
+// `clientOpId`, when set, becomes the `X-Client-Op-Id` header. The BFF's
+// IdempotencyInterceptor caches the first response per id and replays it on
+// subsequent retries, closing the at-least-once gap when the BFF's response
+// never reached the FE (network drop after server work landed).
+async function graphqlRequest<T>(
+  query: string,
+  variables?: Record<string, any>,
+  clientOpId?: string,
+): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (clientOpId) headers['X-Client-Op-Id'] = clientOpId;
   const response = await fetch(GRAPHQL_ENDPOINT, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({
       query,
       variables,
     }),
-
   });
 
   const json = await response.json();
@@ -112,7 +121,10 @@ export async function fetchTodo(id: string): Promise<Todo | null> {
   return data.todo;
 }
 
-export async function createTodo(input: CreateTodoInput): Promise<Todo> {
+export async function createTodo(
+  input: CreateTodoInput,
+  clientOpId?: string,
+): Promise<Todo> {
   const data = await graphqlRequest<{ createTodo: Todo }>(`
     mutation CreateTodo($input: CreateTodoInput!) {
       createTodo(input: $input) {
@@ -124,12 +136,15 @@ export async function createTodo(input: CreateTodoInput): Promise<Todo> {
         updatedAt
       }
     }
-  `, { input });
+  `, { input }, clientOpId);
 
   return data.createTodo;
 }
 
-export async function updateTodo(input: UpdateTodoInput): Promise<Todo> {
+export async function updateTodo(
+  input: UpdateTodoInput,
+  clientOpId?: string,
+): Promise<Todo> {
   const data = await graphqlRequest<{ updateTodo: Todo }>(`
     mutation UpdateTodo($input: UpdateTodoInput!) {
       updateTodo(input: $input) {
@@ -141,7 +156,7 @@ export async function updateTodo(input: UpdateTodoInput): Promise<Todo> {
         updatedAt
       }
     }
-  `, { input });
+  `, { input }, clientOpId);
 
   return data.updateTodo;
 }
@@ -190,7 +205,10 @@ export async function fetchTodoAuditCounts(): Promise<TodoAuditCount[]> {
   return data.todoAuditCounts;
 }
 
-export async function createTodoAudit(input: CreateTodoAuditInput): Promise<TodoAudit> {
+export async function createTodoAudit(
+  input: CreateTodoAuditInput,
+  clientOpId?: string,
+): Promise<TodoAudit> {
   const data = await graphqlRequest<{ createTodoAudit: TodoAudit }>(`
     mutation CreateTodoAudit($input: CreateTodoAuditInput!) {
       createTodoAudit(input: $input) {
@@ -201,7 +219,7 @@ export async function createTodoAudit(input: CreateTodoAuditInput): Promise<Todo
         createdAt
       }
     }
-  `, { input });
+  `, { input }, clientOpId);
 
   return data.createTodoAudit;
 }
@@ -217,30 +235,37 @@ export async function fetchShoppingLists(): Promise<ShoppingList[]> {
   return data.shoppingLists;
 }
 
-export async function createShoppingList(input: CreateShoppingListInput): Promise<ShoppingList> {
+export async function createShoppingList(
+  input: CreateShoppingListInput,
+  clientOpId?: string,
+): Promise<ShoppingList> {
   const data = await graphqlRequest<{ createShoppingList: ShoppingList }>(`
     mutation CreateShoppingList($input: CreateShoppingListInput!) {
       createShoppingList(input: $input) {
         ${SHOPPING_LIST_FIELDS}
       }
     }
-  `, { input });
+  `, { input }, clientOpId);
   return data.createShoppingList;
 }
 
-export async function deleteShoppingList(id: string): Promise<ShoppingList | null> {
+export async function deleteShoppingList(
+  id: string,
+  clientOpId?: string,
+): Promise<ShoppingList | null> {
   const data = await graphqlRequest<{ deleteShoppingList: ShoppingList | null }>(`
     mutation DeleteShoppingList($id: ID!) {
       deleteShoppingList(id: $id) {
         ${SHOPPING_LIST_FIELDS}
       }
     }
-  `, { id });
+  `, { id }, clientOpId);
   return data.deleteShoppingList;
 }
 
 export async function addShoppingListItem(
   input: AddShoppingListItemInput,
+  clientOpId?: string,
 ): Promise<ShoppingListItem> {
   const data = await graphqlRequest<{ addShoppingListItem: ShoppingListItem }>(`
     mutation AddShoppingListItem($input: AddShoppingListItemInput!) {
@@ -248,12 +273,13 @@ export async function addShoppingListItem(
         ${SHOPPING_LIST_ITEM_FIELDS}
       }
     }
-  `, { input });
+  `, { input }, clientOpId);
   return data.addShoppingListItem;
 }
 
 export async function updateShoppingListItem(
   input: UpdateShoppingListItemInput,
+  clientOpId?: string,
 ): Promise<ShoppingListItem | null> {
   const data = await graphqlRequest<{ updateShoppingListItem: ShoppingListItem | null }>(`
     mutation UpdateShoppingListItem($input: UpdateShoppingListItemInput!) {
@@ -261,22 +287,28 @@ export async function updateShoppingListItem(
         ${SHOPPING_LIST_ITEM_FIELDS}
       }
     }
-  `, { input });
+  `, { input }, clientOpId);
   return data.updateShoppingListItem;
 }
 
-export async function removeShoppingListItem(id: string): Promise<ShoppingListItem | null> {
+export async function removeShoppingListItem(
+  id: string,
+  clientOpId?: string,
+): Promise<ShoppingListItem | null> {
   const data = await graphqlRequest<{ removeShoppingListItem: ShoppingListItem | null }>(`
     mutation RemoveShoppingListItem($id: ID!) {
       removeShoppingListItem(id: $id) {
         ${SHOPPING_LIST_ITEM_FIELDS}
       }
     }
-  `, { id });
+  `, { id }, clientOpId);
   return data.removeShoppingListItem;
 }
 
-export async function deleteTodo(id: string): Promise<Todo | null> {
+export async function deleteTodo(
+  id: string,
+  clientOpId?: string,
+): Promise<Todo | null> {
   const data = await graphqlRequest<{ deleteTodo: Todo | null }>(`
     mutation DeleteTodo($id: ID!) {
       deleteTodo(id: $id) {
@@ -288,15 +320,18 @@ export async function deleteTodo(id: string): Promise<Todo | null> {
         updatedAt
       }
     }
-  `, { id });
+  `, { id }, clientOpId);
 
   return data.deleteTodo;
 }
 
-export async function createBudget(input: {
-  shoppingListId: string;
-  total: number;
-}): Promise<Budget> {
+export async function createBudget(
+  input: {
+    shoppingListId: string;
+    total: number;
+  },
+  clientOpId?: string,
+): Promise<Budget> {
   const data = await graphqlRequest<{ createBudget: Budget }>(
     `
       mutation CreateBudget($input: CreateBudgetInput!) {
@@ -306,6 +341,7 @@ export async function createBudget(input: {
       }
     `,
     { input },
+    clientOpId,
   );
   return data.createBudget;
 }
@@ -324,6 +360,7 @@ export async function fetchBudgets(): Promise<Budget[]> {
 export async function decrementBudget(
   shoppingListId: string,
   amount: number,
+  clientOpId?: string,
 ): Promise<Budget | null> {
   const data = await graphqlRequest<{ decrementBudget: Budget | null }>(
     `
@@ -334,6 +371,7 @@ export async function decrementBudget(
       }
     `,
     { shoppingListId, amount },
+    clientOpId,
   );
   return data.decrementBudget;
 }
@@ -341,6 +379,7 @@ export async function decrementBudget(
 export async function incrementBudget(
   shoppingListId: string,
   amount: number,
+  clientOpId?: string,
 ): Promise<Budget | null> {
   const data = await graphqlRequest<{ incrementBudget: Budget | null }>(
     `
@@ -351,6 +390,7 @@ export async function incrementBudget(
       }
     `,
     { shoppingListId, amount },
+    clientOpId,
   );
   return data.incrementBudget;
 }

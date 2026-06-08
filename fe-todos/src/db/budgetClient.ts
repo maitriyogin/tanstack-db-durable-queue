@@ -41,10 +41,13 @@ export const budgetsCollection = createCollection(
         'shoppingLists',
         inserted.shoppingListId,
       );
-      const created = await graphql.createBudget({
-        shoppingListId: resolvedListId,
-        total: inserted.total,
-      });
+      const created = await graphql.createBudget(
+        {
+          shoppingListId: resolvedListId,
+          total: inserted.total,
+        },
+        (transaction as any).clientOpId,
+      );
       return { serverId: created.id };
     },
 
@@ -62,9 +65,9 @@ export const budgetsCollection = createCollection(
         modified.shoppingListId,
       );
       if (delta > 0) {
-        await graphql.decrementBudget(resolvedListId, delta);
+        await graphql.decrementBudget(resolvedListId, delta, (transaction as any).clientOpId);
       } else {
-        await graphql.incrementBudget(resolvedListId, -delta);
+        await graphql.incrementBudget(resolvedListId, -delta, (transaction as any).clientOpId);
       }
     },
   })

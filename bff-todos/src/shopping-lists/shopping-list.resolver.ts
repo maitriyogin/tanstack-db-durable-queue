@@ -7,10 +7,15 @@ import {
   UpdateShoppingListInput,
   UpdateShoppingListItemInput,
 } from './shopping-list.input';
+import { IdempotencyService } from '../idempotency/idempotency.service';
+import { ClientOpId } from '../idempotency/client-op-id.decorator';
 
 @Resolver(() => ShoppingList)
 export class ShoppingListResolver {
-  constructor(private readonly shoppingListService: ShoppingListService) {}
+  constructor(
+    private readonly shoppingListService: ShoppingListService,
+    private readonly idem: IdempotencyService,
+  ) {}
 
   @Query(() => ShoppingList, { nullable: true })
   async shoppingList(
@@ -27,22 +32,31 @@ export class ShoppingListResolver {
   @Mutation(() => ShoppingList)
   async createShoppingList(
     @Args('input') input: CreateShoppingListInput,
+    @ClientOpId() opId?: string,
   ): Promise<ShoppingList> {
-    return await this.shoppingListService.createShoppingList(input);
+    return this.idem.guardOrReplay(opId, () =>
+      this.shoppingListService.createShoppingList(input),
+    );
   }
 
   @Mutation(() => ShoppingList, { nullable: true })
   async updateShoppingList(
     @Args('input') input: UpdateShoppingListInput,
+    @ClientOpId() opId?: string,
   ): Promise<ShoppingList | null> {
-    return await this.shoppingListService.updateShoppingList(input);
+    return this.idem.guardOrReplay(opId, () =>
+      this.shoppingListService.updateShoppingList(input),
+    );
   }
 
   @Mutation(() => ShoppingList, { nullable: true })
   async deleteShoppingList(
     @Args('id', { type: () => ID }) id: string,
+    @ClientOpId() opId?: string,
   ): Promise<ShoppingList | null> {
-    return await this.shoppingListService.deleteShoppingList(id);
+    return this.idem.guardOrReplay(opId, () =>
+      this.shoppingListService.deleteShoppingList(id),
+    );
   }
 
   @Query(() => ShoppingListItem, { nullable: true })
@@ -55,21 +69,30 @@ export class ShoppingListResolver {
   @Mutation(() => ShoppingListItem)
   async addShoppingListItem(
     @Args('input') input: AddShoppingListItemInput,
+    @ClientOpId() opId?: string,
   ): Promise<ShoppingListItem> {
-    return await this.shoppingListService.addItem(input);
+    return this.idem.guardOrReplay(opId, () =>
+      this.shoppingListService.addItem(input),
+    );
   }
 
   @Mutation(() => ShoppingListItem, { nullable: true })
   async updateShoppingListItem(
     @Args('input') input: UpdateShoppingListItemInput,
+    @ClientOpId() opId?: string,
   ): Promise<ShoppingListItem | null> {
-    return await this.shoppingListService.updateItem(input);
+    return this.idem.guardOrReplay(opId, () =>
+      this.shoppingListService.updateItem(input),
+    );
   }
 
   @Mutation(() => ShoppingListItem, { nullable: true })
   async removeShoppingListItem(
     @Args('id', { type: () => ID }) id: string,
+    @ClientOpId() opId?: string,
   ): Promise<ShoppingListItem | null> {
-    return await this.shoppingListService.removeItem(id);
+    return this.idem.guardOrReplay(opId, () =>
+      this.shoppingListService.removeItem(id),
+    );
   }
 }

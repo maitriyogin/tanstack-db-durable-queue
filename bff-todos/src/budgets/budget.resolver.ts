@@ -2,10 +2,15 @@ import { Resolver, Query, Mutation, Args, ID, Int } from '@nestjs/graphql';
 import { BudgetService } from './budget.service';
 import { Budget } from './budget.model';
 import { CreateBudgetInput } from './budget.input';
+import { IdempotencyService } from '../idempotency/idempotency.service';
+import { ClientOpId } from '../idempotency/client-op-id.decorator';
 
 @Resolver(() => Budget)
 export class BudgetResolver {
-  constructor(private readonly budgetService: BudgetService) {}
+  constructor(
+    private readonly budgetService: BudgetService,
+    private readonly idem: IdempotencyService,
+  ) {}
 
   @Query(() => [Budget])
   async budgets(): Promise<Budget[]> {
@@ -22,8 +27,11 @@ export class BudgetResolver {
   @Mutation(() => Budget)
   async createBudget(
     @Args('input') input: CreateBudgetInput,
+    @ClientOpId() opId?: string,
   ): Promise<Budget> {
-    return await this.budgetService.createBudget(input);
+    return this.idem.guardOrReplay(opId, () =>
+      this.budgetService.createBudget(input),
+    );
   }
 
   // Deducts an amount from the budget linked to a shopping list. Used by the
@@ -32,8 +40,11 @@ export class BudgetResolver {
   async decrementBudget(
     @Args('shoppingListId', { type: () => ID }) shoppingListId: string,
     @Args('amount', { type: () => Int }) amount: number,
+    @ClientOpId() opId?: string,
   ): Promise<Budget | null> {
-    return await this.budgetService.decrementBudget(shoppingListId, amount);
+    return this.idem.guardOrReplay(opId, () =>
+      this.budgetService.decrementBudget(shoppingListId, amount),
+    );
   }
 
   // Inverse of `decrementBudget`. Used by the FE wrapper's projection when
@@ -43,7 +54,10 @@ export class BudgetResolver {
   async incrementBudget(
     @Args('shoppingListId', { type: () => ID }) shoppingListId: string,
     @Args('amount', { type: () => Int }) amount: number,
+    @ClientOpId() opId?: string,
   ): Promise<Budget | null> {
-    return await this.budgetService.incrementBudget(shoppingListId, amount);
+    return this.idem.guardOrReplay(opId, () =>
+      this.budgetService.incrementBudget(shoppingListId, amount),
+    );
   }
 }

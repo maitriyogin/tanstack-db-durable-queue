@@ -15,6 +15,9 @@ import { BudgetsModule } from './budgets/budgets.module';
       sortSchema: true,
       playground: true,
       introspection: true,
+      // Expose the raw request on the GraphQL context so the @ClientOpId
+      // param decorator can read X-Client-Op-Id off mutation requests.
+      context: ({ req }: { req: unknown }) => ({ req }),
     }),
     TodosModule,
     TodosAuditModule,

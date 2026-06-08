@@ -54,27 +54,33 @@ export const todosCollection = createCollection(
 
     onInsert: async ({ transaction }) => {
       const inserted = transaction.mutations[0].modified as Todo;
-      const created = await graphql.createTodo({
-        name: inserted.name,
-        description: inserted.description,
-        status: inserted.status,
-      });
+      const created = await graphql.createTodo(
+        {
+          name: inserted.name,
+          description: inserted.description,
+          status: inserted.status,
+        },
+        (transaction as any).clientOpId,
+      );
       return { serverId: created.id };
     },
 
     onUpdate: async ({ transaction }) => {
       const updated = transaction.mutations[0].modified as Todo;
-      await graphql.updateTodo({
-        id: updated.id,
-        name: updated.name,
-        description: updated.description,
-        status: updated.status,
-      });
+      await graphql.updateTodo(
+        {
+          id: updated.id,
+          name: updated.name,
+          description: updated.description,
+          status: updated.status,
+        },
+        (transaction as any).clientOpId,
+      );
     },
 
     onDelete: async ({ transaction }) => {
       const key = transaction.mutations[0].key as string;
-      await graphql.deleteTodo(key);
+      await graphql.deleteTodo(key, (transaction as any).clientOpId);
     },
   })
 );
@@ -104,11 +110,14 @@ export const todoAuditsCollection = createCollection(
 
     onInsert: async ({ transaction }) => {
       const inserted = transaction.mutations[0].modified as TodoAudit;
-      const created = await graphql.createTodoAudit({
-        todoId: inserted.todoId,
-        action: inserted.action,
-        changes: inserted.changes ?? undefined,
-      });
+      const created = await graphql.createTodoAudit(
+        {
+          todoId: inserted.todoId,
+          action: inserted.action,
+          changes: inserted.changes ?? undefined,
+        },
+        (transaction as any).clientOpId,
+      );
       // Server mints the real id; bind so the temp row in our synced cache
       // flips to the canonical id without unmounting in the React tree.
       return { serverId: created.id };

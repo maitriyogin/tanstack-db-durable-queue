@@ -63,3 +63,17 @@ model Budget {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }
+
+// Deduplication store for client-minted op ids. The FE durable queue mints
+// a stable id per mutation op; the BFF persists (clientOpId, response) on
+// first execution so a retry of the same op returns the cached response
+// without re-running the resolver. Closes the at-least-once gap when an
+// ack is lost between BFF and FE.
+//
+// responseJson is the full GraphQL response payload as a string so we can
+// return identical bytes on a dedup hit. No expiry (dev/demo scope).
+model ClientOpResult {
+  clientOpId   String   @id
+  responseJson String
+  createdAt    DateTime @default(now())
+}

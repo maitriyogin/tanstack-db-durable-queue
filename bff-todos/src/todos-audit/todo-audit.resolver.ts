@@ -2,10 +2,15 @@ import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { TodoAuditService } from './todo-audit.service';
 import { TodoAudit, TodoAuditCount } from './todo-audit.model';
 import { CreateTodoAuditInput } from './todo-audit.input';
+import { IdempotencyService } from '../idempotency/idempotency.service';
+import { ClientOpId } from '../idempotency/client-op-id.decorator';
 
 @Resolver(() => TodoAudit)
 export class TodoAuditResolver {
-  constructor(private readonly todoAuditService: TodoAuditService) {}
+  constructor(
+    private readonly todoAuditService: TodoAuditService,
+    private readonly idem: IdempotencyService,
+  ) {}
 
   @Query(() => [TodoAudit])
   async todoAudits(
@@ -30,7 +35,10 @@ export class TodoAuditResolver {
   @Mutation(() => TodoAudit)
   async createTodoAudit(
     @Args('input') input: CreateTodoAuditInput,
+    @ClientOpId() opId?: string,
   ): Promise<TodoAudit> {
-    return await this.todoAuditService.createTodoAudit(input);
+    return this.idem.guardOrReplay(opId, () =>
+      this.todoAuditService.createTodoAudit(input),
+    );
   }
 }

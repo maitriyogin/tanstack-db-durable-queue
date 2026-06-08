@@ -188,11 +188,17 @@ export function durableQueueCollectionOptions<T extends object>(
     }
   }
 
+  // The runner re-dispatches the same op (same `op.id`) on retry, so handlers
+  // can use `transaction.clientOpId` as the X-Client-Op-Id header — the BFF's
+  // IdempotencyInterceptor dedupes against it. For fan-out handlers (e.g.
+  // shopping-list syncItems) derive sub-ids per HTTP call so each cached row
+  // is unique.
   queue.registerCollection(collectionId, {
     onInsert: onInsert
       ? async (op) => {
           const result = (await onInsert({
             transaction: {
+              clientOpId: op.id,
               mutations: [
                 { key: op.key, modified: op.payload.modified as T },
               ],
@@ -208,6 +214,7 @@ export function durableQueueCollectionOptions<T extends object>(
       ? async (op) => {
           await onUpdate({
             transaction: {
+              clientOpId: op.id,
               mutations: [
                 {
                   key: op.key,
@@ -227,6 +234,7 @@ export function durableQueueCollectionOptions<T extends object>(
       ? async (op) => {
           await onDelete({
             transaction: {
+              clientOpId: op.id,
               mutations: [
                 { key: op.key, original: op.payload.original as T },
               ],
