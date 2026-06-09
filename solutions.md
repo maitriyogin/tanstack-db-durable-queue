@@ -571,6 +571,34 @@ Every coverage box is satisfied by the same logic shape; only the read/write API
 - BFF idempotency dedup hits against the `op.id`-as-`X-Client-Op-Id` shape that the runner forwards (smoke-tested with two identical `createTodo` requests sharing one id; identical responses, one Todo row).
 - Scope is limited to the `todos` collection (no shopping lists / budgets / audits / projections in this build) — the runner supports projections via `CollectionHandlers.projections` but no consumer wires them. Adding the other collections would be mechanical (more `registerCollection` calls, more `compute…` helpers); no design decisions left.
 
+### Sibling port — `fe-todos-expo` (Expo + Legend State + expo-sqlite)
+
+A React Native build at `fe-todos-expo/`, also on the `legend-state-durable-queue` branch. Same store/runner code as `fe-todos-legend`; only the platform shims differ.
+
+**What's reused verbatim** (copied 1:1 from `fe-todos-legend/src/store/`):
+- `types.ts` — domain + queue op shapes.
+- `mutationQueue.ts` — the runner. All 12 boxes (drain mutex, retrySafe, exponential backoff, quarantine, recovery actions, cold-boot sweep) — no platform code.
+- `todosClient.ts` — handlers, `computeTodos`, `aliasFor`, the user-facing add/update/delete helpers.
+- `queryClient.ts` and `useTodosQuery.ts` — TQ wiring.
+
+**What's RN-specific:**
+- `state.ts` — swaps `ObservablePersistLocalStorage` for `observablePersistSqlite(ExpoSQLiteStorage)` from `@legendapp/state/persist-plugins/expo-sqlite`. The plugin uses Expo's KV-store API on top of SQLite; durable across reloads, fast K/V access pattern. Exports `syncHandle` (the sync state observable) so the bootstrap can `await when(syncHandle.isPersistLoaded)` before kicking the sweep — expo-sqlite's plugin is async, unlike localStorage.
+- `graphql.ts` — endpoint reads from `EXPO_PUBLIC_BFF_URL` (defaults to `http://localhost:4010/graphql` for the iOS sim). Document recommends `http://10.0.2.2:4010/graphql` for Android emu and `http://<dev-machine-ip>:4010/graphql` for physical devices.
+- `drainTriggers.ts` — replaces `online` / `focus` window events with `NetInfo.addEventListener` (network connectivity) + `AppState.addEventListener('change', ...)` (foreground/background). Same `triggerDrain()` contract on the queue.
+- `queue.ts` — module-init wraps the cold-boot sweep in `await when(syncHandle.isPersistLoaded); await mutationQueue.ready()` so SQLite has finished hydrating before the runner reads `state$.queue.ops`.
+- `polyfills.ts` — imports `react-native-get-random-values` and falls back to a v4-shaped `crypto.randomUUID` shim if the runtime doesn't ship one. Imported first thing in `app/_layout.tsx`.
+
+**Expo plumbing:**
+- `app.json` — minimal SDK 56 config, `newArchEnabled: true`, `expo-router` plugin.
+- `app/_layout.tsx` — root stack inside `GestureHandlerRootView` + `SafeAreaProvider` + `QueryClientProvider`. Side-effect imports `@/store/queue` so the runner is wired once at app start.
+- `app/index.tsx` — single screen rendering the RN `<TodoList>`.
+- `src/components/TodoList.tsx` — `View` / `Text` / `Pressable` / `Switch` / `FlatList` / `TextInput` instead of DOM. Failed/Retry/Discard band per quarantined row using the same `mutationQueue.retryCascade(correlationKey)` / `mutationQueue.discardCascade(correlationKey)` API.
+
+**Verified:**
+- `bunx tsc --noEmit` clean.
+- `bunx expo export --platform ios --dev` produces an 8.7 MB dev bundle. `grep` over the bundle confirms `createMutationQueue`, `coldBootSweep`, `retryCascade`, `attachDrainTriggers`, `expo-sqlite`, `legendapp`, and `EXPO_PUBLIC_BFF_URL` all land in the output.
+- Workspace registered (`fe-todos-expo` in root `package.json` workspaces); root `dev:expo` script proxies to `expo start`. Not in the concurrent `dev` script — Expo's CLI is interactive, you run it on its own.
+
 ### Sibling port — `fe-todos-redux` (Redux Toolkit + TanStack Query)
 
 A parallel branch (`redux-tq-durable-queue`) with the same shape: RTK slices for `queue.ops` / `queue.bindings` / `todos.byId`, `redux-persist` against `localStorage`, the same hand-rolled runner reading/writing through the redux store. Same coverage. Same trade-off versus the framework's built-ins (here it's `RTK Query` and `redux-offline` rather than `synced()`). Same file shape under `fe-todos-redux/src/store/`. Listed alongside Legend State to make the comparison easier — three FE apps, same BFF, same coverage list, three different state containers.

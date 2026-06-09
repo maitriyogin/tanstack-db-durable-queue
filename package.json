@@ -5,13 +5,15 @@
   "workspaces": [
     "bff-todos",
     "fe-todos",
-    "fe-todos-legend"
+    "fe-todos-legend",
+    "fe-todos-expo"
   ],
   "scripts": {
     "dev": "concurrently --names bff,fe,legend --prefix-colors blue,green,magenta \"bun run dev:bff\" \"bun run dev:fe\" \"bun run dev:legend\"",
     "dev:bff": "bun run --cwd bff-todos dev",
     "dev:fe": "bun run --cwd fe-todos dev",
     "dev:legend": "bun run --cwd fe-todos-legend dev",
+    "dev:expo": "bun run --cwd fe-todos-expo start",
     "build:fe": "bun run --cwd fe-todos build",
     "build:bff": "bun run --cwd bff-todos build",
     "build:legend": "bun run --cwd fe-todos-legend build",
