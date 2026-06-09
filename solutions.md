@@ -513,3 +513,64 @@ All 11 boxes from `data-layer-scenarios.md` complete (see Tasks #1–#12 above),
 - **`clearAll` — local-only reset.** New `clearAll()` exported from `client.ts` plus a "Clear local data" button next to the Todos header. Two-step orchestration: (1) `mutationQueue.clearLocalState()` rejects every pending `awaitOpCompletion` deferred (so parent transactions don't hang), cancels the wake timer, deletes every row from the `mutation-queue` / `mutation-quarantine` / `id-bindings` collections, clears in-memory `tempToServer` / `serverToTemp` mirrors, resets the `draining` flag. (2) `clearCollectionCache(collection)` (new helper in `durableQueueCollection.ts`) iterates each wrapped collection's keys and calls `utils.writeBatch(() => utils.writeDelete(key))` — bypasses `onDelete` so we don't queue server deletes against rows we're trying to forget. **No automatic refetch** — caches stay empty until the next focus / online / mutation trigger. Server data is untouched, so the data will reappear via natural triggers; the "clear" verb only describes the local state. Button is gated by a `confirm(...)` dialog so it's not a one-click footgun.
 
 **38 integration tests**, all passing under `bun test` (or `bun run test` from the repo root).
+
+---
+
+## Sibling port — `fe-todos-legend` (Legend State + TanStack Query)
+
+A second FE app at `fe-todos-legend/` on port 3003, wired to the same BFF as `fe-todos`. Same coverage list, swapped state container. Built on the `legend-state-durable-queue` branch; `fe-todos` remains the TanStack DB reference.
+
+### Architecture in one paragraph
+
+A single `state$ = observable({ todos: { byId }, queue: { ops, bindings, nextSeq } })` holds local state. `syncObservable(state$, { persist: { plugin: ObservablePersistLocalStorage } })` writes the whole tree to `localStorage` on every change and hydrates synchronously on module load. A hand-rolled `MutationQueue` runner reads the queue via `state$.queue.ops.get()` and writes via `state$.queue.ops[id].set(...)`. Reads in components go through `useSelector(() => computeTodos())` — Legend State tracks each `.get()` call inside the callback and re-renders on change. TanStack Query drives reads (the `useTodosQuery` effect lifts results into `state$.todos.byId`); the runner invalidates after each ack.
+
+### Why not `synced()` / `syncedCrud()` from `@legendapp/state/sync`
+
+The Legend State sync plugins do retries + persistence for free, but they own the queue and don't expose three things this exercise needs:
+
+1. **Per-op idempotency keys.** No surface for forwarding `X-Client-Op-Id` so the BFF dedupes retries.
+2. **Quarantine boundary.** Failed ops are aggregate (`syncState(obs$).error.get()` / `getPendingChanges()`) — no per-op identity for a Failed/Retry/Discard UI.
+3. **Temp→server id reconciliation.** No mapping from an insert response's id back to the optimistic temp id.
+
+Wrapping all three on top of `synced()` would be more code than the runner. So Legend State here is just the state container + persistence; the runner owns ops, retry policy, quarantine, and dispatch.
+
+### Coverage mapping (TanStack DB → Legend State)
+
+| Coverage box | TanStack DB | Legend State port |
+|---|---|---|
+| #1 Local apply + durable queue | wrapper enqueues into `mutation-queue` collection | `state$.queue.ops[id].set(...)` (persisted via `syncObservable`) |
+| #2 Optimistic state visible | TanStack DB transaction overlay | `computeTodos()` overlays `state$.queue.ops` on `state$.todos.byId` in seq order |
+| #3 Ack reconciliation | wrapper `invalidates` + queryCollection auto-refetch | runner calls `queryClient.invalidateQueries(...)` after each ack |
+| #4 Render-key alias | `queue.aliasFor(...)` | `aliasFor(key)` reads `state$.queue.bindings`, parent passes it as React `key=` |
+| #5 Scoped rollback | one TanStack DB tx per op | runner mutates only the failed op's row, settles only that deferred |
+| #6 Multi-collection projections | `projections` config on the wrapper | identical `projections` config on `CollectionHandlers`, runner runs them after parent ack |
+| #7 `retrySafe` flag | `retrySafe` on the wrapper | identical map/function form on `CollectionHandlers` |
+| #8 Persistent backoff | `nextAttemptAt` on the persisted op | same field on the op, persisted via `syncObservable` |
+| #9 Quarantine boundary + cascade | separate `mutation-quarantine` collection | one extra `status: 'quarantined'` value (no separate observable — selectors filter it out of the active drain) |
+| #10 Recovery actions | `retryCascade` / `discardCascade` / `discardAnchorRequeueRest` on the queue | identical methods, identical contract |
+| #11 Drain triggers + mutex | `attachDrainTriggers` helper | same helper, same flag-based mutex |
+| #12 Cold-boot sweep | `coldBootSweep()` in `ready()` | identical, called from `ready()` after `syncObservable` rehydrates |
+
+Every coverage box is satisfied by the same logic shape; only the read/write API changed.
+
+### Files
+
+- `fe-todos-legend/src/store/state.ts` — the single observable and `syncObservable` wiring.
+- `fe-todos-legend/src/store/mutationQueue.ts` — the runner. Same drain loop, retry policy, quarantine, recovery actions, cold-boot sweep as `fe-todos-redux`'s runner; reads/writes go through `state$` instead of a redux store.
+- `fe-todos-legend/src/store/todosClient.ts` — `registerTodosCollection` (handlers that POST to the BFF and forward `op.id` as `X-Client-Op-Id`), plus `computeTodos` / `aliasFor` / `computeQuarantineByRowId` / `computeQueueDepth` / `addTodo` / `updateTodo` / `deleteTodo`.
+- `fe-todos-legend/src/store/useTodosQuery.ts` — TQ hook that lifts refetch results into `state$.todos.byId`.
+- `fe-todos-legend/src/store/queue.ts` — singleton: `createMutationQueue`, `registerTodosCollection`, `attachDrainTriggers`, `ready()`. Module-init order matters because `ready()` reads from `state$` and assumes `syncObservable` has hydrated (which is synchronous on `localStorage`).
+- `fe-todos-legend/src/store/drainTriggers.ts` — `online`/`focus` event wiring; identical shape to `fe-todos`/`fe-todos-redux`.
+- `fe-todos-legend/src/components/TodoList.tsx` — `useSelector(() => computeTodos())` etc., plus a Failed/Retry/Discard band per quarantined row that calls `mutationQueue.retryCascade(correlationKey)` / `mutationQueue.discardCascade(correlationKey)`.
+- Workspace registration in root `package.json`; `bun run dev` brings up BFF + `fe-todos` + `fe-todos-legend` (ports 4010 / 3000 / 3003).
+
+### Verified
+
+- `bunx tsc --noEmit` clean.
+- BFF + FE boot; `http://localhost:3003/` renders and the bundle includes `createMutationQueue`, `coldBootSweep`, `retryCascade`, `@legendapp/state` symbols.
+- BFF idempotency dedup hits against the `op.id`-as-`X-Client-Op-Id` shape that the runner forwards (smoke-tested with two identical `createTodo` requests sharing one id; identical responses, one Todo row).
+- Scope is limited to the `todos` collection (no shopping lists / budgets / audits / projections in this build) — the runner supports projections via `CollectionHandlers.projections` but no consumer wires them. Adding the other collections would be mechanical (more `registerCollection` calls, more `compute…` helpers); no design decisions left.
+
+### Sibling port — `fe-todos-redux` (Redux Toolkit + TanStack Query)
+
+A parallel branch (`redux-tq-durable-queue`) with the same shape: RTK slices for `queue.ops` / `queue.bindings` / `todos.byId`, `redux-persist` against `localStorage`, the same hand-rolled runner reading/writing through the redux store. Same coverage. Same trade-off versus the framework's built-ins (here it's `RTK Query` and `redux-offline` rather than `synced()`). Same file shape under `fe-todos-redux/src/store/`. Listed alongside Legend State to make the comparison easier — three FE apps, same BFF, same coverage list, three different state containers.
