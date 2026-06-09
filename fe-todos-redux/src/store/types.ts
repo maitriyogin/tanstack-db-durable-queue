@@ -26,7 +26,10 @@ export interface UpdateTodoInput {
 // ---- Durable queue types ----
 
 export type QueueOpType = 'insert' | 'update' | 'delete';
-export type QueueOpStatus = 'pending' | 'inflight';
+// `quarantined` rows live in the same slice as `pending`/`inflight` rows —
+// keeping one collection means selectors see them all in one place. The
+// runner ignores quarantined rows in pickNext.
+export type QueueOpStatus = 'pending' | 'inflight' | 'quarantined';
 
 export interface QueueOp<T = unknown> {
   id: string;
@@ -47,10 +50,22 @@ export interface QueueOp<T = unknown> {
   seq: number;
   attempts: number;
   status: QueueOpStatus;
-  // Future-proofing for tasks #4 / #9 / #11 / #12. Carried through the
-  // slice now so persistence shape doesn't churn later.
+  // Box #9: ops sharing a correlation key quarantine as a group.
   correlationKey: string;
+  // Box #8: wall-clock ms when the op becomes eligible. null = now.
+  // Persisted with the op so a 25s remaining backoff still waits 25s
+  // after a reload.
   nextAttemptAt: number | null;
+  // Box #9: set when the op moves from active to quarantined.
+  quarantineReason?: 'parent' | 'cascade';
+  quarantineError?: string;
+  quarantinedAt?: number;
+  // Box #12: identifies the session that last flipped this op to inflight.
+  // Cold-boot sweep uses it to spot crash leftovers.
+  sessionId?: string;
+  // Box #12: set true when the cold-boot sweep promotes this op back to
+  // pending after a crash. Cleared on the next attempt.
+  recoveredFromCrash?: boolean;
 }
 
 export interface IdBinding {

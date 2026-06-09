@@ -47,4 +47,31 @@ export const selectTodos = createSelector(
 export const selectTodosStatus = (state: RootState) => state.todos.status;
 export const selectTodosError = (state: RootState) => state.todos.error;
 export const selectQueueDepth = (state: RootState) =>
-  Object.keys(state.queue.ops).length;
+  Object.values(state.queue.ops).filter((op) => op.status !== 'quarantined').length;
+
+// Box #9: list of ops parked in quarantine for a given collection. The UI
+// reads this to render Failed/Retry/Discard affordances.
+export const makeSelectQuarantineFor = (collectionId: string) =>
+  createSelector(
+    [(state: RootState) => state.queue.ops],
+    (ops) =>
+      Object.values(ops).filter(
+        (op) =>
+          op.collectionId === collectionId && op.status === 'quarantined',
+      ),
+  );
+
+// Box #4: render-key alias. When a row's id is a server id and we have a
+// binding for it, return the original temp id. Components key React lists
+// off this so a row doesn't unmount when the underlying id flips temp→
+// server. When there's no binding for the input, return it unchanged.
+export function aliasForKey(
+  state: RootState,
+  collectionId: string,
+  key: string,
+): string {
+  for (const b of Object.values(state.queue.bindings)) {
+    if (b.collectionId === collectionId && b.serverId === key) return b.tempId;
+  }
+  return key;
+}

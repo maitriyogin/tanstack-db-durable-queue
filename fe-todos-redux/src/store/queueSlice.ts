@@ -59,6 +59,43 @@ const queueSlice = createSlice({
       state.bindings = {};
       state.nextSeq = 0;
     },
+    // Box #9: move an op into quarantine. The runner uses this for both
+    // anchor (parent) ops that exhausted retries and for cascaded
+    // dependents that share a correlation key.
+    quarantineOp(
+      state,
+      action: PayloadAction<{
+        id: string;
+        reason: 'parent' | 'cascade';
+        error?: string;
+        at: number;
+      }>,
+    ) {
+      const op = state.ops[action.payload.id];
+      if (!op) return;
+      op.status = 'quarantined';
+      op.quarantineReason = action.payload.reason;
+      op.quarantineError = action.payload.error;
+      op.quarantinedAt = action.payload.at;
+      // Clear scheduling so a recovery action that flips it back to
+      // 'pending' fires immediately.
+      op.nextAttemptAt = null;
+    },
+    // Box #10: requeue a quarantined op. Called by retryCascade /
+    // discardAnchorRequeueRest.
+    requeueOp(state, action: PayloadAction<string>) {
+      const op = state.ops[action.payload];
+      if (!op) return;
+      op.status = 'pending';
+      op.attempts = 0;
+      op.nextAttemptAt = null;
+      op.quarantineReason = undefined;
+      op.quarantineError = undefined;
+      op.quarantinedAt = undefined;
+      // Bump seq so requeued ops don't compete with brand-new ones for
+      // ordering; matches the TanStack DB version.
+      op.seq = state.nextSeq++;
+    },
   },
 });
 
