@@ -4,14 +4,17 @@
   "private": true,
   "workspaces": [
     "bff-todos",
-    "fe-todos"
+    "fe-todos",
+    "fe-todos-redux"
   ],
   "scripts": {
-    "dev": "concurrently --names bff,fe --prefix-colors blue,green \"bun run dev:bff\" \"bun run dev:fe\"",
+    "dev": "concurrently --names bff,fe,redux --prefix-colors blue,green,magenta \"bun run dev:bff\" \"bun run dev:fe\" \"bun run dev:redux\"",
     "dev:bff": "bun run --cwd bff-todos dev",
     "dev:fe": "bun run --cwd fe-todos dev",
+    "dev:redux": "bun run --cwd fe-todos-redux dev",
     "build:fe": "bun run --cwd fe-todos build",
     "build:bff": "bun run --cwd bff-todos build",
+    "build:redux": "bun run --cwd fe-todos-redux build",
     "test": "bun run --cwd fe-todos test",
     "test:e2e": "playwright test"
   },
