@@ -4,14 +4,17 @@
   "private": true,
   "workspaces": [
     "bff-todos",
-    "fe-todos"
+    "fe-todos",
+    "fe-todos-legend"
   ],
   "scripts": {
-    "dev": "concurrently --names bff,fe --prefix-colors blue,green \"bun run dev:bff\" \"bun run dev:fe\"",
+    "dev": "concurrently --names bff,fe,legend --prefix-colors blue,green,magenta \"bun run dev:bff\" \"bun run dev:fe\" \"bun run dev:legend\"",
     "dev:bff": "bun run --cwd bff-todos dev",
     "dev:fe": "bun run --cwd fe-todos dev",
+    "dev:legend": "bun run --cwd fe-todos-legend dev",
     "build:fe": "bun run --cwd fe-todos build",
     "build:bff": "bun run --cwd bff-todos build",
+    "build:legend": "bun run --cwd fe-todos-legend build",
     "test": "bun run --cwd fe-todos test",
     "test:e2e": "playwright test"
   },
