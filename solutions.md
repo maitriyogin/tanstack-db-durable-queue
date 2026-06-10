@@ -553,6 +553,45 @@ Wrapping all three on top of `synced()` would be more code than the runner. So L
 
 Every coverage box is satisfied by the same logic shape; only the read/write API changed.
 
+### Why `registerTodosCollection` exists (and how it maps to TanStack DB's collection options)
+
+The runner (`createMutationQueue`) is **collection-agnostic**. It knows how to:
+
+- Pick the next pending op from `state$.queue.ops` by `seq`.
+- Rewrite temp→server keys at dispatch.
+- Run retry / backoff / quarantine / recovery.
+- Invalidate TQ keys after acks.
+
+What it doesn't know is **how to actually call the BFF for a given op type**. That's collection-specific. `registerTodosCollection` is the seam where the runner is taught that knowledge:
+
+```ts
+queue.registerCollection<Todo>(TODOS_COLLECTION_ID, {
+  primaryQueryKey: TODOS_QUERY_KEY,    // refetch this after every ack
+  invalidates: [],                      // and these siblings
+  onInsert: async (op) => { ...; return { serverId: created.id } },
+  onUpdate: async (op) => { ... },
+  onDelete: async (op) => { ... },
+});
+```
+
+When the runner picks an op it looks up `handlersByCollection.get(op.collectionId)` and calls the matching method. No registration → `"No handlers registered for collection 'todos'"` thrown at dispatch time. A second collection means a second `registerXCollection(queue)` call; the runner is unchanged.
+
+**It mirrors TanStack DB's collection options.** Side-by-side on the same `MutationQueue` contract:
+
+| TanStack DB (`fe-todos`) | Legend / Redux / Expo ports |
+|---|---|
+| `createCollection(durableQueueCollectionOptions({ collectionId, queryKey, queryFn, queryClient, getKey, onInsert, onUpdate, onDelete, invalidates, projections, retrySafe, correlationKey }))` | `queue.registerCollection<T>(collectionId, { primaryQueryKey, invalidates, onInsert, onUpdate, onDelete, retrySafe, projections })` plus a separate `useQuery({ queryKey, queryFn })` for reads |
+| `onInsert: async ({ transaction }) => { ...; return { serverId } }` | `onInsert: async (op) => { ...; return { serverId } }` |
+| `onUpdate: async ({ transaction }) => { ... }` | `onUpdate: async (op) => { ... }` |
+| `onDelete: async ({ transaction }) => { ... }` | `onDelete: async (op) => { ... }` |
+| `invalidates: [['todoAuditCounts']]` | `invalidates: [['todoAuditCounts']]` (identical) |
+| `retrySafe: { insert: false, update: true, delete: false }` | `retrySafe: { insert: false, update: true, delete: false }` (identical) |
+| `projections: { audit: { apply, optimistic, onError } }` | `projections: { audit: { apply, optimistic, onError } }` (identical) |
+
+The handler payload differs slightly — TanStack DB hands you a `transaction` with one or more `mutations`; the ports hand you a single `QueueOp` with `op.payload.modified` / `op.payload.original` / `op.payload.changes`. But the **contract is the same**: do the server work, return `{ serverId }` from inserts, throw to fail. `invalidates`, `projections`, and `retrySafe` are byte-for-byte identical configs.
+
+**Why TanStack DB hides the registration step.** TanStack DB couples *state container* and *handler registration* in `createCollection(durableQueueCollectionOptions(...))` — when you create the collection, you've also told it how to mutate. It can do that because each collection is its own first-class state object. Legend State (and Redux) work differently: state is one big tree, collections are just branches under it. So registration has to live somewhere on its own — the runner needs a `collectionId → handlers` map independent of where the data is stored. Two-step setup instead of one-step, but every option that mattered in `durableQueueCollectionOptions` is available here too.
+
 ### Files
 
 - `fe-todos-legend/src/store/state.ts` — the single observable and `syncObservable` wiring.
