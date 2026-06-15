@@ -1,0 +1,32 @@
+{
+  "name": "fe-todos-redux",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun src/index.ts",
+    "start": "NODE_ENV=production bun src/index.ts",
+    "build": "bun run build.ts",
+    "codegen": "bunx graphql-codegen --config codegen.ts",
+    "codegen:watch": "bunx graphql-codegen --config codegen.ts --watch"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.12.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-redux": "^9.3.0",
+    "redux-persist": "^6.0.0",
+    "tailwindcss": "^4.2.4",
+    "bun-plugin-tailwind": "^0.1.2"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^7.1.2",
+    "@graphql-codegen/typescript": "4",
+    "@graphql-codegen/typescript-operations": "4",
+    "@graphql-codegen/typescript-rtk-query": "2",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "graphql": "^16.14.2"
+  }
+}

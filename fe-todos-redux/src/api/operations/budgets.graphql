@@ -1,0 +1,32 @@
+fragment BudgetFields on Budget {
+  id
+  total
+  remaining
+  shoppingListId
+  createdAt
+  updatedAt
+}
+
+query getBudgets {
+  budgets {
+    ...BudgetFields
+  }
+}
+
+mutation createBudget($input: CreateBudgetInput!) {
+  createBudget(input: $input) {
+    ...BudgetFields
+  }
+}
+
+mutation decrementBudget($shoppingListId: ID!, $amount: Int!) {
+  decrementBudget(shoppingListId: $shoppingListId, amount: $amount) {
+    ...BudgetFields
+  }
+}
+
+mutation incrementBudget($shoppingListId: ID!, $amount: Int!) {
+  incrementBudget(shoppingListId: $shoppingListId, amount: $amount) {
+    ...BudgetFields
+  }
+}

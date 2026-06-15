@@ -1,0 +1,59 @@
+fragment ShoppingListItemFields on ShoppingListItem {
+  id
+  name
+  quantity
+  unit
+  notes
+  cost
+  shoppingListId
+  createdAt
+  updatedAt
+}
+
+fragment ShoppingListFields on ShoppingList {
+  id
+  name
+  description
+  todoId
+  createdAt
+  updatedAt
+  items {
+    ...ShoppingListItemFields
+  }
+}
+
+query getShoppingLists {
+  shoppingLists {
+    ...ShoppingListFields
+  }
+}
+
+mutation createShoppingList($input: CreateShoppingListInput!) {
+  createShoppingList(input: $input) {
+    ...ShoppingListFields
+  }
+}
+
+mutation deleteShoppingList($id: ID!) {
+  deleteShoppingList(id: $id) {
+    ...ShoppingListFields
+  }
+}
+
+mutation addShoppingListItem($input: AddShoppingListItemInput!) {
+  addShoppingListItem(input: $input) {
+    ...ShoppingListItemFields
+  }
+}
+
+mutation updateShoppingListItem($input: UpdateShoppingListItemInput!) {
+  updateShoppingListItem(input: $input) {
+    ...ShoppingListItemFields
+  }
+}
+
+mutation removeShoppingListItem($id: ID!) {
+  removeShoppingListItem(id: $id) {
+    ...ShoppingListItemFields
+  }
+}

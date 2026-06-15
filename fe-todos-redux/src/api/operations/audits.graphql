@@ -1,0 +1,19 @@
+query getTodoAudits {
+  allTodoAudits {
+    id
+    todoId
+    action
+    changes
+    createdAt
+  }
+}
+
+mutation createTodoAudit($input: CreateTodoAuditInput!) {
+  createTodoAudit(input: $input) {
+    id
+    todoId
+    action
+    changes
+    createdAt
+  }
+}
